@@ -1,8 +1,13 @@
 import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 
 
-const app=express();
+
+const app=express(cors({
+    origin:process.env.ORIGIN_URL
+}));
 
 
 

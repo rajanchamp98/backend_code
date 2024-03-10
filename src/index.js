@@ -14,8 +14,8 @@ const port=process.env.PORT || 8000;
 connectDB().then((res)=>{
 
     console.log(res);
-    app.listen(port)
-    console.log(`App is listening at Port no ${port}`)
+    const data =app.listen(port)
+    console.log(`App is listening at Port no ${port}`,data)
 
 }).catch((error)=>{
 

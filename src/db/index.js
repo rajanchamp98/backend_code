@@ -7,7 +7,7 @@ import { DB_Name } from "../constants.js";
         console.log(`\n MongoDB is connected successfully!!,${connectionInstance.connection.host}`);
 
     }catch(error){
-        console.log("mongodb connection error",error);
+        console.log("mongodb connection error");
         process.exit(1);
 
     }
