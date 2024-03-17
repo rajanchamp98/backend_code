@@ -5,21 +5,16 @@ import app from "./app.js";
 
 const port=process.env.PORT || 8000;
 
+// console.log(process.env.MONGODB_URI) 
 
-
-
-
-
-// console.log(process.env.MONGODB_URI)
 connectDB().then((res)=>{
-
+    
     console.log(res);
-    const data =app.listen(port)
-    console.log(`App is listening at Port no ${port}`,data)
+    const data =app.listen(port);
+    console.log(`App is listening at Port no  ${port}`);
 
 }).catch((error)=>{
-
-    console.log("error in connection of DB");
+     console.log("error in connection of DB");
 });
 
 
@@ -37,5 +32,5 @@ connectDB().then((res)=>{
 //         });
 //         throw error
 //     }
-// })()
+// }
 

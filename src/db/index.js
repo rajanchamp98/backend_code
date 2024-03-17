@@ -9,7 +9,6 @@ import { DB_Name } from "../constants.js";
     }catch(error){
         console.log("mongodb connection error");
         process.exit(1);
-
     }
 }
 
