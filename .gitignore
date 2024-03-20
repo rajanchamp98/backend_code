@@ -1,4 +1,7 @@
 # Logs
+.gitignore
+
+.vscode
 logs
 *.log
 npm-debug.log*

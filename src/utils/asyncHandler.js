@@ -1,4 +1,1 @@
-const asyncHandler=()=>{
-  
-    
-}
+const asyncHandler=()=>()
