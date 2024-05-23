@@ -1,8 +1,9 @@
 import mongoose,{Schema} from 'mongoose'
+import mongooseAggregatePaginate from 'mongoose-aggregate-paginate-v2';
 
 
 
-const videoSchema=Schema({
+const videoSchema=new Schema({
 
     videoFile:{
         type:String, // cloudinary pe jayega ye and udhar se link milega
@@ -42,6 +43,8 @@ const videoSchema=Schema({
 
 },
 {timeStamps:true})
+
+videoSchema.plugin()
 
 
 
