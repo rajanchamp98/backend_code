@@ -1,8 +1,17 @@
 const asyncHandler=(requestHandler)=>{
     return (req,res,next)=>{
-        Promise.resolve(requestHandler(req,res,next)).catch()
+
+        Promise.resolve(requestHandler(req,res,next)).catch((error)=>next(error))
     
 }
+}
+
+
+
+
+
+export {asyncHandler}
+
 
 
 
@@ -32,26 +41,25 @@ const asyncHandler=(requestHandler)=>{
 //  2) same code using normal function 
 
 
-/*
 
-function asyncHandler(requestHandler){
-    return(
-        async function (req,res,next){
-            try {
-                await requestHandler(req,res,next)
+
+// function asyncHandler(requestHandler){
+//     return(
+//         async function (req,res,next){
+//             try {
+//                 await requestHandler(req,res,next)
                 
-            } catch (error) {
+//             } catch (error) {
 
-                req.status(err.status || 500).json(
-                    {
-                        success:false,
-                        message: error.message
-                    }
-                )
+//                 req.status(err.status || 500).json(
+//                     {
+//                         success:false,
+//                         message: error.message
+//                     }
+//                 )
                 
-            }
+//             }
 
-        }
+//         }
         
-    )
-}*/
+//     )
