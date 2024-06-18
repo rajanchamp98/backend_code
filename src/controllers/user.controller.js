@@ -1,6 +1,7 @@
 import ApiResponse from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import ApiError from "../utils/ApiError.js";
+import { User } from "../models/user.model.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   // 1 getting input from req.body
@@ -14,23 +15,35 @@ const registerUser = asyncHandler(async (req, res) => {
   // 9 return response
 
   const { fullName, username, email, password } = req.body;
-  console.log(fullName)
 
-  const userData = {
-    "Full Name": fullName,
-    "Username": username,
-    "Email": email,
-    "Password": password,
-  };
-  if(username==="" && email===""){
-    console.log("email or username is required")
-    res.status(400).json(new ApiResponse(400,"email or username is missing"))
+  // validation 
+  if ([username, email, fullName].some((value) => value.trim() === "")) {
+    throw new ApiError(400, "All fields are required!");
   }
- // = assignment 
- // == checking without type 2=="2" true 
-//  === checking with type 2==="2" false integer===string  false 
 
-    res.status(200).json(new ApiResponse(200, userData));
+  // check if user exist or not 
+  const existedUser=await User.findOne({$or:[{username},{email}]});
+
+  if (existedUser) {
+    throw new ApiError(409,"User with same email or username already exist!")
+    
+  }
+
+  // 4 check for image , check for avtar
+
+  console.log(req.files)
+
+
+
+
+
+
+  res.status(200).json({
+    "full name": fullName,
+    "User Name": username,
+    email: email,
+    Password: password,
+  });
 });
 
 export { registerUser };
