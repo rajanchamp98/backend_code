@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { DB_Name } from "../constants.js";
 
  const connectDB=async()=>{
+    console.log(DB_Name)
 
     console.log(process.env.MONGODB_URI+" and Db name is "+DB_Name)
     try{
@@ -11,6 +12,7 @@ import { DB_Name } from "../constants.js";
     }catch(error){
         console.log("mongodb connection error");
         process.exit(1);
+        
     }
 }
 

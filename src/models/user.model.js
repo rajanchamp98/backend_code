@@ -32,7 +32,7 @@ const userSchema =new  Schema(
 
     coverImage: {
       type: String, // cloudnary pe upload hoga waha se link generate hoke store hoga
-      required: true,
+      
     },
     password: {
       type: String,
@@ -40,10 +40,10 @@ const userSchema =new  Schema(
     },
     refreshToken: {
       type: String,
-      required: true,
+      // required: true,
     },
   },
-  { timeStamps: true }
+  { timestamps:true}
 );
 
 
