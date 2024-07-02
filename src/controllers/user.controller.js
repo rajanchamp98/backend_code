@@ -90,9 +90,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const accessTokenAndRefreshTokenGenerator = async (user_id) => {
   try {
-    const user = await User.findById({ user_id });
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const user = await User.findById( user_id );
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
 
     user.refreshToken = refreshToken;
 
@@ -109,7 +109,7 @@ const accessTokenAndRefreshTokenGenerator = async (user_id) => {
   }
 };
 
-const loginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async(req , res) => {
   // Steps to be followed for user login
 
   // 1 get data from req.body
@@ -118,15 +118,14 @@ const loginUser = asyncHandler(async (req, res) => {
   // 4 password check
   // 5 access and refresh token generation and send to user
   // 6 send cookies
+  
+  const {username,password,email}=req.body
 
-  const { username, email, password } = req.body;
-  console.log(req.body);
-
-  if (!username || !email) {
+  if (!(username || email)) {
     throw new ApiError(400, "username or email is required!");
   }
 
-  const getUser = await User.findById({ $or: [{ username }, { email }] });
+  const getUser = await User.findOne({ $or: [{ username }, { email }] });
 
   if (!getUser) {
     throw new ApiError(404, "User does not exist");
@@ -136,14 +135,13 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(404, "password is required!");
   }
 
-  const validatedUser = await getUser.isPasswordCorrect(password);
+  const validatedUser = await getUser.isPasswordCorrect(password)
 
   if (!validatedUser) {
     throw new ApiError(401, "invalid credentials !");
   }
 
-  const { accessToken, refreshToken } =
-    await accessTokenAndRefreshTokenGenerator(getUser._id);
+  const { accessToken, refreshToken } = await accessTokenAndRefreshTokenGenerator(getUser._id);
   // Here we got access token and refresh token by distructuring accessTokenAndRefreshTokenGenerator .
 
   // getting user details after excluding password and refreshToken fields
@@ -178,7 +176,7 @@ const logoutUser=asyncHandler(async(req,res)=>{
   await User.findByIdAndUpdate(req.user._id,
     {
       $set:{
-      "refreshToken":undefined
+      refreshToken:undefined
       },
       
     },
@@ -192,7 +190,7 @@ const logoutUser=asyncHandler(async(req,res)=>{
     secure: true,
   };
 
-  res
+ res
   .status(200)
   .clearCookie("accessToken",option)
   .clearCookie("refreshToken",option)
