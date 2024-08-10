@@ -35,7 +35,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // console.log(req.files);
 
-  const avatarLocalPath = req.files?.avatar[0]?.path;
+  const avatarLocalPath = req?.files?.avatar[0]?.path;
   // const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
   let coverImageLocalPath;
@@ -55,14 +55,17 @@ const registerUser = asyncHandler(async (req, res) => {
   const avatar = await cloudinaryFileUpload(avatarLocalPath);
   const coverImage = await cloudinaryFileUpload(coverImageLocalPath);
 
-  // console.log(avatar);
+
+
+  
+
 
   const userObject = {
     username: username.toLowerCase(),
     password,
     email,
     fullName,
-    avatar: avatar.url,
+    avatar: avatar?.url,
     coverImage: coverImage.url || "",
     refreshToken: "",
   };
@@ -90,7 +93,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const accessTokenAndRefreshTokenGenerator = async (user_id) => {
   try {
-    const user = await User.findById( user_id );
+    const user = await User.findById(user_id);
     const accessToken = await user.generateAccessToken();
     const refreshToken = await user.generateRefreshToken();
 
@@ -109,7 +112,7 @@ const accessTokenAndRefreshTokenGenerator = async (user_id) => {
   }
 };
 
-const loginUser = asyncHandler(async(req , res) => {
+const loginUser = asyncHandler(async (req, res) => {
   // Steps to be followed for user login
 
   // 1 get data from req.body
@@ -118,8 +121,8 @@ const loginUser = asyncHandler(async(req , res) => {
   // 4 password check
   // 5 access and refresh token generation and send to user
   // 6 send cookies
-  
-  const {username,password,email}=req.body
+
+  const { username, password, email } = req.body;
 
   if (!(username || email)) {
     throw new ApiError(400, "username or email is required!");
@@ -135,13 +138,14 @@ const loginUser = asyncHandler(async(req , res) => {
     throw new ApiError(404, "password is required!");
   }
 
-  const validatedUser = await getUser.isPasswordCorrect(password)
+  const validatedUser = await getUser.isPasswordCorrect(password);
 
   if (!validatedUser) {
     throw new ApiError(401, "invalid credentials !");
   }
 
-  const { accessToken, refreshToken } = await accessTokenAndRefreshTokenGenerator(getUser._id);
+  const { accessToken, refreshToken } =
+    await accessTokenAndRefreshTokenGenerator(getUser._id);
   // Here we got access token and refresh token by distructuring accessTokenAndRefreshTokenGenerator .
 
   // getting user details after excluding password and refreshToken fields
@@ -156,50 +160,50 @@ const loginUser = asyncHandler(async(req , res) => {
     httpOnly: true,
     secure: true,
   };
-  res.status(200).cookie("refreshToken",refreshToken,option)
-  .cookie("accessToken",accessToken,option).json(
-    new ApiResponse(200,
-      {
-        user:loggedInUser,refreshToken,accessToken
-      },
-      "User Logged in successfully"
-    )
-  )
+  res
+    .status(200)
+    .cookie("refreshToken", refreshToken, option)
+    .cookie("accessToken", accessToken, option)
+    .json(
+      new ApiResponse(
+        200,
+        {
+          user: loggedInUser,
+          refreshToken,
+          accessToken,
+        },
+        "User Logged in successfully"
+      )
+    );
 });
 
 //--------------------------------- log in controller end here---------------------------------------
 
 //--------------------------------- log out controller start from here-------------------------------
 
-
-const logoutUser=asyncHandler(async(req,res)=>{
-  await User.findByIdAndUpdate(req.user._id,
+const logoutUser = asyncHandler(async (req, res) => {
+  await User.findByIdAndUpdate(
+    req.user._id,
     {
-      $set:{
-      refreshToken:undefined
+      $set: {
+        refreshToken:"",
       },
-      
     },
     {
-      new:true
+      new: true,
     }
-  )
+  );
 
   const option = {
     httpOnly: true,
     secure: true,
   };
 
- res
-  .status(200)
-  .clearCookie("accessToken",option)
-  .clearCookie("refreshToken",option)
-  .json(new ApiResponse(200,{},"User logged out succesfully"))
+  res
+    .status(200)
+    .clearCookie("accessToken", option)
+    .clearCookie("refreshToken", option)
+    .json(new ApiResponse(200, {}, "User logged out succesfully"));
+});
 
-
-
-})
-
-
-
-export { registerUser, loginUser,logoutUser };
+export { registerUser, loginUser, logoutUser };
